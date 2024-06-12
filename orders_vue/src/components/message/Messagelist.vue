@@ -40,14 +40,12 @@ const obj = reactive({
 })
 
 const handleread = () => {
-    console.log()
     obj.unread = 0
     for (var a of props.data.content) {
         if (!a.unread && props.data.contact === a.to) {
             obj.unread++
         }
     }
-    console.log(obj.unread)
 
 }
 
@@ -76,48 +74,38 @@ const handlestoreunread = (data) => {
             if (!data.content[a].unread) {
                 var b = data.content[a]
                 b.unread = true
-                list.push(b)//改变store，
-                // console.log('yes read')
-                handleunread(data.content[a].messageid)//改变indexdb
+                list.push(b)
+                handleunread(data.content[a].messageid)
 
             } else {
                 list.push(data.content[a])
             }
         }
     }
-    //    console.log({contact:data.contact,content:list})
     store.commit('updatemessage', { contact: data.contact, content: list })
 }
-// 消除 indexdb unread
 const handleunread = (id) => {
 
     const request = indexedDB.open('message', 1)
     request.onsuccess = function (event) {
         const db = event.target.result;
-        // 创建一个读写事务  
         const transaction = db.transaction(['message'], 'readwrite');
         const objectStore = transaction.objectStore('message');
 
-        // 使用 get 方法根据主键查找数据  
         const getRequest = objectStore.get(id);
 
         getRequest.onsuccess = function (event) {
             const data = event.target.result;
             if (data) {
-                // 修改数据  
                 data.unread = true;
-                // console.log(data.unread)
-                //   使用 put 方法更新数据  
                 const putRequest = objectStore.put(data);
                 putRequest.onsuccess = function (event) {
-                    // console.log('Data updated successfully');  
                 };
 
                 putRequest.onerror = function (event) {
                     console.error('Error updating data', event.target.errorCode);
                 };
             } else {
-                console.log('No data found for the given primary key');
             }
         };
 

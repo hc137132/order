@@ -46,7 +46,6 @@ const props = defineProps({
 })
 const previewFile = (event) => {
     const file = event
-    console.log(file)
     if (file) {
         //file to url
         const reader = new FileReader();
@@ -62,9 +61,7 @@ const previewFile = (event) => {
 };
 
 onMounted(() => {
-    // console.log(props.data.filename.split('.').slice(-1))
     previewFile(props.data.file)
-    // console.log(props.data.file.type.split('/'))
     if (['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff', 'image'].indexOf(props.data.filename.split('.').slice(-1)[0]) >= 0) {
         obj.mdi = 'mdi-image'
     } else if (['mp4', 'm2v', 'mkv', 'video'].indexOf(props.data.filename.split('.').slice(-1)[0]) >= 0) {
@@ -92,7 +89,6 @@ function openmydoc(path) {
 
 }
 const handledel = (data) => {
-    // console.log(data)
     emit('fatherdef', data)
 }
 

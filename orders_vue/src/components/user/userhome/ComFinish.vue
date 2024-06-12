@@ -24,7 +24,6 @@ onMounted(() => {
     formdata.append('type', 'get');
     api.httpdetail.post('/orderfinish', formdata)
         .then(res => {
-            console.log(res.data.finish);
             if (res.data.finish && props.data.finish) {
                 obj.aa='已完成'
             } else if (res.data.finish && ! props.data.finish){

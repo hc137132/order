@@ -108,12 +108,10 @@ onMounted(() => {
     formdata.append('id', obj.orderid)
     api.httptk.post('getorderdetail', formdata).then(response => {
         obj.detail = response.data; // 更新 detail 为 API 响应的数据  
-        console.log(response.data);
 
     })
     formdata.append('type', 'get')
     api.httpdetail.post('/orderfinish', formdata).then(res => {
-        console.log(res.data.data)
         if (!res.data.data) {
             obj.loading = false;
             return
@@ -125,21 +123,15 @@ onMounted(() => {
         if (order.text) {
             let formdata = new FormData()
             formdata.append('uuid', order.text)
-            console.log(order.text)
             api.httpdetail.post('/gettext', formdata).then(response => {
-                console.log(response.data)
                 obj.text = response.data
             })
         }
-        // obj.textlistjson.push(
-        // { type: 'file', filename: file.name, file: file, size: file.size })
-        // 创建一个用于存储 Promise 的数组 
-        console.log(order.files)
+        
         if (!order.files) {
             return
         }
         const downloadPromises = order.files.map(a => {
-            // 使用箭头函数直接返回Promise，无需在外部声明download函数  
             return new Promise((resolve, reject) => {
                 let formdata = new FormData();
                 formdata.append('type', 'finish');
@@ -158,18 +150,16 @@ onMounted(() => {
 
                     const file = new File([blob], a.filename, { type: fileType });
                     obj.textlistjson.push({ type: 'file', filename: file.name, file: file, size: file.size });
-                    resolve(); // 当文件下载并处理后，解决Promise  
+                    resolve();  
                 }).catch(error => {
-                    reject(error); // 如果发生错误，拒绝Promise  
+                    reject(error);  
                 });
             });
         });
 
-        // 使用Promise.all等待所有downloadPromises都完成  
         Promise.all(downloadPromises).then(() => {
-            // 所有文件都已下载并处理完成，可以在这里继续后续操作  
-            obj.loading = false; // 假设您想在这里关闭加载状态  
-            // ... 其他后续代码 ...  
+            obj.loading = false; 
+             
         })
     })
 
@@ -178,25 +168,19 @@ onMounted(() => {
 const handicon = (name) => {
     const fileExtension = name.split('.').pop().toLowerCase();
     const file_formats = ['pdf', 'png', 'jpg', 'jpeg', 'gif', 'txt', 'rtf', 'html', 'xml', 'json', 'mp3', 'wav', 'wma', 'mp4', 'webm', 'ogg', 'aac', 'doc', 'docx', 'ppt', 'xlsx', 'zip', 'rar', 'glb', 'gltf', 'heic', 'heif']
-    const isPreviewable = file_formats.includes(fileExtension); // 可以添加更多可预览的文件类型  
-
+    const isPreviewable = file_formats.includes(fileExtension);
     return isPreviewable
 }
 
 
 function handledrop(event) {
-    // event.stopPropagation();
     event.preventDefault();
     event.stopPropagation()
-    console.log('success')
     const files = event.dataTransfer.items
-    console.log(files)
     for (const file of files) {
-        //  DataTransferItem 对象 
         const item = file.webkitGetAsEntry()
         if (item.isFile) {
             item.file((file) => {
-                // 在这里你可以处理 File 对象的属性，例如 name, size, type 等
                 obj.textlistjson.push(
                     { type: 'file', filename: file.name, file: file, size: file.size })
 
@@ -205,7 +189,6 @@ function handledrop(event) {
             uploadDirectory(item)
         }
     }
-    console.log(obj.textlistjson)
 }
 function uploadDirectory(directory) {
     const reader = directory.createReader();
@@ -213,7 +196,6 @@ function uploadDirectory(directory) {
         entries.forEach((entry) => {
             if (entry.isFile) {
                 entry.file((file) => {
-                    // 在这里你可以处理 File 对象的属性，例如 name, size, type 等
                     obj.textlistjson.push(
                         { type: 'file', filename: file.name, file: file, size: file.size })
                 })
@@ -235,7 +217,6 @@ const handgetfile = (e) => {
         }
     }
 }
-//将预案textlistjson的list data 分类排序成一个新的list====datajson
 const handlelist = () => {
     if (obj.text === '' && obj.textlistjson.length == 0) {
         console.log('asdasd')
@@ -245,7 +226,6 @@ const handlelist = () => {
     let data = new FormData()
     var T_Fdata = { text: [], files: [] }//text:[{,uuidname:'',index:x}],file:[{uuidname:'',filename:''}]
     for (var n in obj.textlistjson) {
-        // console.log(obj.textlistjson[n].file.name.split('.').slice(-1))
         let filenewname = uuidv4() + '.' + obj.textlistjson[n].file.name.split('.').slice(-1)[0]
         data.append(filenewname, obj.textlistjson[n].file)
         T_Fdata.files.push({
@@ -258,7 +238,6 @@ const handlelist = () => {
     data.append(textuuidname, obj.text)
     data.append('id', route.query.orderid)
     data.append('orderjson', JSON.stringify(T_Fdata))
-    console.log(T_Fdata)
     if (obj.flag) {
         data.append('type', 'update')
     } else {
@@ -270,11 +249,9 @@ const handlelist = () => {
         onUploadProgress: (progressEvent) => {
             const totalLength = progressEvent.total;
             const downloadedLength = progressEvent.loaded;
-            // console.log(totalLength, downloadedLength);
             obj.skill = Math.round((downloadedLength / totalLength) * 100);
         }
     }).then(response => {
-        console.log(response.data)
         if (response.data.code == 1) {
             router.push('/userhome/tproject')
         }
@@ -283,41 +260,31 @@ const handlelist = () => {
     )
 }
 const previewFile = (file) => {
-    // console.log(file)
     if (!file) {
         return;
     }
 
     if (handicon(file.name)) {
 
-        //file to url
-
-        // 如果可以在浏览器中预览，创建一个Object URL并使用window.open 
-        console.log(file)
+        
         const url = URL.createObjectURL(file);
         window.open(url, '_blank');
 
-        // 当新窗口/标签页关闭时，释放URL对象（可选，但推荐）  
-        // window.addEventListener('unload', () => {
-        //     URL.revokeObjectURL(url);
-        // }, { once: true });
+        
     } else {
-        // 如果不能预览，触发下载  
         const url = URL.createObjectURL(file);
         const a = document.createElement('a');
         a.href = url;
-        a.download = file.name; // 保持原始文件名（包括后缀）  
+        a.download = file.name; 
         a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
 
-        // 释放URL对象  
         URL.revokeObjectURL(url);
     }
 };
 const handledel = (data) => {
-    // console.log(data)
     obj.textlistjson = obj.textlistjson.filter(res => res != data)
 }
 const handlemdi = (filename) => {
@@ -345,7 +312,6 @@ const handlemdi = (filename) => {
 
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.5));
 
-    /* 使用backdrop-filter属性来模糊背景，但注意这可能会影响到性能 */
     backdrop-filter: blur(10px);
     background-color: rgba(248, 249, 248, 0.3);
 

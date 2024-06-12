@@ -182,7 +182,6 @@ const send = () => {
     var data = new FormData()
     data.append('email', obj.email)
     http.post('/emailauth', data).then(res => {
-      console.log(res.data)
       obj.djg_otop = res.data.auth
     })
 
@@ -194,7 +193,6 @@ const emailusename = () => {
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/usernamedete', data).then(res => {
-    console.log(res.data.code)
     if (res.data.code === 0) {
       obj.emailusename = true
       obj.emailrename = false
@@ -252,20 +250,17 @@ watch(() => obj.againpassword, (newvalue, oldvalue) => {
     }
   
 })
-// angin send
 const handleac = () => {
   obj.actime = 6
   count()
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/emailauth', data).then(res => {
-    console.log(res.data)
     obj.djg_otop = res.data.auth
   })
 
 
 }
-//watch otp page
 watch(() => obj.otp, (newvalue) => {
 
   if (newvalue.length === 6 && newvalue === obj.djg_otop) {
@@ -281,7 +276,6 @@ watch(() => obj.otp, (newvalue) => {
   }
 })
 
-//click signin注册 function
 const handlesnginup=()=>{
   if(
     obj.password && obj.againpassword && obj.password===obj.againpassword && !obj.passwordalert
@@ -297,9 +291,8 @@ const handlesnginup=()=>{
     formdata.append('password', obj.password)
     formdata.append('date', date)
     formdata.append('userid', uuidv4().replace(/-/g, ''))
-    console.log(formdata)
     http.post('/signup', formdata).then(res => {
-    console.log(res.data)})
+  })
     obj.passwordpage=false
     obj.successpage=true
     countA()
@@ -309,7 +302,6 @@ const handlesnginup=()=>{
   }
   //倒计时count down function
   const countA = () => {
-    console.log(obj.backlogintime)
   if (obj.backlogintime <= 0) {
     clearTimeout(ssa)  
     router.push('/login')

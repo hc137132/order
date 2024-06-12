@@ -57,16 +57,14 @@ const obj = reactive({
 const handel = (e) => {
 
     var x = e.pageX;
-    var y = e.pageY - 10;//相对于浏览器
+    var y = e.pageY - 10;
     var x = e.pageX - 10;
-    var zx = e.offsetX//相对标签
-    var zy = e.offsetY//减去图片的高度
+    var zx = e.offsetX
+    var zy = e.offsetY
     var data = { x: zx - 10, y: zy - 180 - 10, number: obj.complist.length + 1 }
     obj.complist.push(data)
     obj.style = `position:relative;top:${zy}px;left:${zx}px`
-    // console.log(x, y, zx, zy, obj.complist)
     if (obj.complist.length === 4) {
-        //verify
         obj.indexlist.forEach(ele => {
             if (obj.complist[ele].x + 10 <= obj.position[ele][0] + 20 && obj.complist[ele].x + 10 >= obj.position[ele][0] - 20 &&
             obj.complist[ele].y + 180+10 <= obj.position[ele][1] + 20 && obj.complist[ele].y +180 +10 >= obj.position[ele][1] - 20
@@ -81,7 +79,6 @@ const handel = (e) => {
                obj.result=false
             }
         });
-        //child send father,second augrment is send value
         emit('robotverify', obj.result)
     }
 }
@@ -90,7 +87,6 @@ const handlereload = () => {
     obj.flag=1
     obj.complist.splice(0)
     http.get('/robotverify').then(response => {
-        // console.log(response.data)
         obj.url = `data:image/png;base64,${response.data.image_data}`
         obj.text = response.data.text
         obj.position = response.data.position
@@ -116,7 +112,6 @@ onMounted(() => {
      justify-content: center;
      overflow: hidden;
     background-color: aliceblue;
-    //  backdrop-filter: blur(5px);//磨砂背景效果
      
 }   
 .show{

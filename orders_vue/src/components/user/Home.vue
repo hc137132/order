@@ -139,60 +139,39 @@ const handsend = () => {
   }
 
 }
-//this is child send father value define function
 const result = (val) => {
   obj.result = val
   if (val) {
-    // console.log('welcome')
-    //以下 define login function
     login()
   }
 }
 
-// watch(() => obj.remember, () => {
-//   console.log(obj.remember)
-// })
 
 const login = () => {
   var formdata = new FormData()
   formdata.append('email', obj.username)
   formdata.append('password', obj.password)
   http.post('/login', formdata).then(res => {
-    console.log(res)
     if (res.data.code === 0) {
-      //login success,first add token
-      // second updata store.state.userdata and store.state.login==true
-      // third第三，create websocket
-      // fourth第四，loading localtion indexdb message
-      localStorage.setItem("token", res.data.token)// accept接收 server send token
-      //get userdata add vuex
+      localStorage.setItem("token", res.data.token)
       var formdata = new FormData()
       formdata.append('email', obj.username)
-      // console.log(api.updateuser(obj.username))
       api.httptk.post('/userdata', formdata).then(res => {
-        console.log(res.data)
-        store.commit('updatauser', res.data)//updateuser)
-        store.commit('login', true)//更改login状态
-
-        //create websocket and open/create indexdb
+        store.commit('updatauser', res.data)
+        store.commit('login', true)
         wckt.startchat()
       }
       )
-
-
-      //remember userid and password
       if (obj.remember) {
         localStorage.setItem("userId", obj.username)
         localStorage.setItem("password", obj.password)
       } else {
-        //clear remember userid and password
         localStorage.removeItem("userId",)
         localStorage.removeItem("password",)
       }
-      setTimeout(() => router.push('/userhome'), 2000)//2s 后跳转
+      setTimeout(() => router.push('/userhome'), 2000)
 
     } else {
-      //login lose
       obj.dialog = true
       setTimeout(() => location.reload(), 2000)
 
@@ -200,7 +179,6 @@ const login = () => {
   })
 }
 onMounted(() => {
-  //load remember useremail and password
   let username = localStorage.getItem("userId");
   if (username) {
     obj.username = localStorage.getItem("userId");

@@ -99,7 +99,6 @@ const payment = () => {
     var formdata = new FormData()
     formdata.append('orderid', route.query.orderid)
     formdata.append('userid', store.state.userdata.userid)
-    console.log(route.query.orderid, store.state.userdata.userid)
     // api.httptk.post('/payment',formdata).then(
     // response=>{
     //     console.log(response.data)
@@ -123,7 +122,6 @@ const payment = () => {
 
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data)
         // if (data.message === 'success') {
         //   console.log('Payment result received successfully');
         //   alert('支付成功');
@@ -133,7 +131,6 @@ const payment = () => {
 
 }
 const getorderfinisher = (id) => {
-    console.log(id)
     if(id){
 let formdata = new FormData()
     formdata.append('userid', id)
@@ -149,27 +146,25 @@ let formdata = new FormData()
 
 }
 
-
 const receiveorder = () => {
     var formdata = new FormData()
     formdata.append('orderid', route.query.orderid)
     formdata.append('userid', store.state.userdata.userid)
-    console.log(route.query.orderid, store.state.userdata.userid)
     api.httptk.post('/receiveorder', formdata).then(
         response => {
             if (response.data.res == 'success') {
-                // 刷新页面
-                console.log('接单success')
+                
+               
                 router.push('/userhome/tproject')
             } else {
-                console.log('exists takename')
+
             }
 
         }
     )
 }
 const orderfinish = (data) => {
-    // 跳转到提交界面
+    
     router.push({
         path: '/userhome/tproject/finish', query: {
             orderid: obj.data.orderid
@@ -179,19 +174,14 @@ const orderfinish = (data) => {
 
 
 onBeforeMount(() => {
-    // console.log(route.query)
-    // getdata(route.query.orderid)
+    
     var formdata = new FormData()
     formdata.append('id', route.query.orderid)
     api.httptk.post('/getorderdetail', formdata).then(res => {
-
-        // type==text 时必须json化再按照index  sort
         obj.data = res.data
-        console.log(obj.data)
         getorderfinisher(obj.data.takename)
         getfinish(obj.data.orderid)
         obj.data.contentdetail = JSON.parse(obj.data.contentdetail)
-        // console.log(obj.data.contentdetail)
         obj.email = res.data.email
         if (store.state.userdata.email === res.data.email) {
             obj.selfdata = true
@@ -206,7 +196,6 @@ onBeforeMount(() => {
             formdata.append('email', res.data.email)
             api.httptk.post('/getorderdetail', formdata).then(res => {
                 obj.textlist.push(res.data.content)
-                console.log()
             }
             )
         }
@@ -218,7 +207,6 @@ const getfinish = (id) => {
     formdata.append('id', id)
     formdata.append('type', 'get')
     api.httptk.post('/orderfinish', formdata).then(res => {
-        console.log(res.data.finish)
         obj.finish = res.data.finish
 
 
@@ -242,7 +230,6 @@ const surefinish=()=>{
 }
 
 const handlereadd = () => {
-    console.log(obj.data)
     router.push({
         path: '/userhome/myproject/reprojectadd', query: {
             orderid: obj.data.orderid, email: obj.data.email
@@ -253,7 +240,6 @@ const handlereadd = () => {
 
 
 const createchat = async () => {
-    console.log(obj.data.email)
     let userdata = null
     userdata = await getdata.getdata(false, obj.data.email)
     let flag = false
@@ -272,8 +258,7 @@ const createchat = async () => {
 }
 const createchatfinish = async (userid) => {
     let userdata = null
-    console.log(obj.data)
-    console.log(userid)
+    
     userdata = await getdata.getdata(userid,false)
    
     let flag = false
@@ -295,12 +280,10 @@ const createchatfinish = async (userid) => {
 const dialog = () => {
 
     obj.showdel = false
-    console.log(22222)
     var formdata = new FormData()
     formdata.append('oldorderid', obj.data.orderid)
     formdata.append('email', obj.data.email)
     api.httptk.post('/updataorder', formdata).then(res => {
-        console.log(res.data)
 
     })
 
@@ -309,12 +292,7 @@ const handledel = () => {
     obj.showdel = true
 
 }
-/* <Filedetail :data="file" v-for="file in obj.data.contentdetail?.files || []" :key="file?.uuidname"></Filedetail>
-在这个示例中，我们使用 ?. 
-来安全地访问 obj.data.contentdetail.files 属性。
-如果 obj.data.contentdetail 不存在或者 files 属性不存在，
-表达式会返回 undefined，而不会导致错误。此外，我们还使用 || [] 
-来确保在 files 为 undefined 时能够正常遍历一个空数组，避免 v-for 报错。 */
+
 
 </script>
 <style lang="scss" scoped>

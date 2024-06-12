@@ -78,8 +78,6 @@ function leave(id, n, e) {
   // ['avatar','introduction','nickname','phonename']
 }
 const handle = (n, url) => {
-  // console.log(n)
-  // 
   var elelist = document.querySelectorAll('#card')
   elelist.forEach(ele => {
     ele.classList.remove('bg-primary')
@@ -93,37 +91,28 @@ const handle = (n, url) => {
 }
 //component mount 
 onBeforeMount(() => {
-  console.log(store.state.login)
-  // console.log(store.state.userdata)
   if(store.state.userdata.avatar){
      obj.avatar = `data:image/png;base64,${store.state.userdata.avatar}`
      var data = new FormData()
     data.append('email', store.state.userdata.email)
     api.httptk.post('/userdata', data).then(res => {
-                console.log(res.data)
                 store.commit('updatauser', res.data)//updateuser)
-                // location.reload()
+                location.reload()
             })
   }
   if (localStorage.getItem('token')) {
     api.httptk.get('/verifytoken').then(res => {
-      // console.log(res.data)
-      // console.log(date.date(res.data.exp))
-      // console.log(date.gettime('2024-03-5 0:13:29'))
+     
       if (res.data.user) {
-        //updateuser
       } else {
-        //verify lose ,back login
         router.push('/home')
         store.commit('login',false)
-        // location.reload();
 
       }
     })
   } else {
     router.push('/home')
     store.commit('login',false)
-    // location.reload();
   }
 
 
@@ -131,7 +120,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
   style()
-  // 定义avatar
   if(store.state.userdata.avatars){
      obj.avatar = `data:image/png;base64,${store.state.userdata.avatar}`
   }else{
@@ -140,18 +128,10 @@ onMounted(() => {
 
   
  
-  //verify token
-
-
-
-  // 获取当前的url来确定选项样式
   const route = useRoute()
-  console.log(route.fullPath.split('/')[2],obj.datalist[1].url.split('/')[2] )
   for (var index in obj.datalist) {
-    // console.log(obj.datalist[index].url)
     if (obj.datalist[index].url.split('/')[2] === route.fullPath.split('/')[2]) {
       handle(index)
-      console.log(index)
     }
   }
 

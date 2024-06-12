@@ -144,7 +144,6 @@ const handleinit = () => {
 }
 
 const handlegetorders = async () => {
-    // console.log(charfield, name)
     let formdata = new FormData()
     formdata.append('filterdict', JSON.stringify(obj.filterdict))
     formdata.append('page', obj.page)
@@ -152,23 +151,17 @@ const handlegetorders = async () => {
 
         formdata.append('search', 'yes')
         formdata.append('stype', obj.searchselect)
-        console.log(obj.searchselect)
         formdata.append('sname', obj.searchtext)
     }
 
-    // formdata.append('name', name)
     await api.httptk.post('/filterdata', formdata).then(response => {
-        console.log(response.data)
         obj.orderslist.push(...response.data.orderlist);
-        // 按照createdate sort
         obj.orderslist.sort(function (a, b) {
             return b.createdate - a.createdate
         })
         if (response.data.page === 'end') {
-            // 没有跟多数据了
             done.value = 'end'
         }
-        console.log(obj.orderslist)
     })
     obj.isloading = false
 }
@@ -183,7 +176,6 @@ const deletelist = (datalist, data) => {
 }
 const listappend = (data, type) => {
 
-    // console.log(obj.filterdict[type].indexOf(data),data)
     if (obj.filterdict[type].indexOf(data) >= 0) {
         obj.filterdict[type] = deletelist(obj.filterdict[type], data)
     } else {
@@ -195,23 +187,17 @@ const listappend = (data, type) => {
 }
 
 
-watch(() => obj.orderslist, () => {
-    console.log('改变了', obj.orderslist)
-})
+
 
 const handlefilter = (e, data, type) => {
-    //handlegetorders(type, data)
-    // console.log(data,type)
     obj.page = 1
     listappend(data, type)
-    // console.log(data, type)
     if (data === '全部') {
 
         var borther = e.target.parentNode.children//all borther element
         for (let n of borther) {
             n.classList.add('su')
         }
-        // console.log(e.target.parentNode.childNodes)
     } else {
         const firstSibling = e.target.parentNode.children[0]
         firstSibling.classList.remove('su')//first borther element
@@ -225,13 +211,9 @@ const handlefilter = (e, data, type) => {
 }
 
 onMounted(() => {
-    // 在组件挂载后设置滚动事件监听器  
     window.addEventListener('scroll', checkElementInViewport);
     handlegetorders()
-    console.log(default1.value.classList)
-    console.log(store.state.type)
     api.http.get('/typehandle').then( res=>{
-            console.log(res.data)
             obj.headerstext.type=['全部' ,...res.data.data ]
         }
     )
@@ -281,7 +263,6 @@ const handlesearch = () => {
 
 }
 
-// 检查元素是否在视口内的函数  
 function isInViewport(element) {
     const rect = element.getBoundingClientRect();
     return (
@@ -292,23 +273,16 @@ function isInViewport(element) {
     );
 }
 
-// 当元素进入视口时执行的函数  
 function onElementInViewport() {
     if (loadpage.value && isInViewport(loadpage.value)) {
-        // 在这里执行你需要的操作  
-        // 如果你只想执行一次，可以取消滚动事件的监听器  
-        // 但是，这可能会阻止其他依赖于滚动事件的代码正常工作  
-        // window.removeEventListener('scroll', checkElementInViewport); 
-        // console.log(obj.page,done.value,22222) 
+         
         if (obj.isloading || done.value === 'end') {
             // if data loading or page is end ,return 
             return
         } else {
             obj.isloading = true
             obj.page++
-            console.log(obj.page)
             handlegetorders(obj.page)
-            console.log(obj.page)
         }
 
 
@@ -316,14 +290,12 @@ function onElementInViewport() {
     }
 }
 
-// 滚动事件监听器  
 function checkElementInViewport() {
     onElementInViewport();
 }
 
 
 
-// 在组件卸载前移除滚动事件监听器  
 onUnmounted(() => {
     window.removeEventListener('scroll', checkElementInViewport);
 });  

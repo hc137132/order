@@ -59,17 +59,14 @@ const handle = () => {
             onDownloadProgress: (progressEvent) => {
                 const totalLength = progressEvent.total;
                 const downloadedLength = progressEvent.loaded;
-                // console.log(totalLength, downloadedLength);
                 obj.skill = Math.round((downloadedLength / totalLength) * 100);
-                // console.log(`Download Progress: ${progress}%`);
-                // 在这里更新进度条或者其他 UI
             }
         }).then(res => {
             const blob = new Blob([res.data]);
             obj.url = URL.createObjectURL(blob);
-            resolve(); // 异步操作完成后 resolve Promise
+            resolve(); 
         }).catch(error => {
-            reject(error); // 异步操作失败时 reject Promise
+            reject(error); 
         });
     });
 };
@@ -84,44 +81,6 @@ const  handledown= async()=>{
         a.click()   
 
 }
-
-
-// const handle = () => {
-//     var formdata = new FormData()
-//     formdata.append('t_fid', props.data.uuidname)
-//     formdata.append('email', store.state.userdata.email)
-//     api.httpdetail.post('/getorderdetail', formdata,{responseType: 'blob',
-//             onDownloadProgress: (progressEvent) => {
-//                 const totalLength = progressEvent.total;
-//                 const downloadedLength = progressEvent.loaded;
-//                 console.log(totalLength,downloadedLength)
-//                 const progress = Math.round((downloadedLength / totalLength) * 100);
-//                 console.log(`Download Progress: ${progress}%`);
-//         // 在这里更新进度条或者其他 UI
-//             }
-
-// }).then(res => {
-//         // console.log(res)
-//          // 获取文件名
-         
-//         //  let fileName = '';
-//         //     const contentDisposition = res.headers['content-disposition'];
-//         //     if (contentDisposition) {
-//         //         const matches = contentDisposition.match(/filename="(.+)"/);
-//         //         if (matches && matches.length > 1) {
-//         //             fileName = matches[1];
-//         //         }
-//         //     }
-//         //处理文件
-//         const blob = new Blob([res.data]);
-//         // var fileType = blob.type
-//         obj.url = URL.createObjectURL(blob);
-//         // console.log(fileType,);
-//         // const file = new File([blob], props.data.filename, { type: 'image/png' });
-//         // obj.url =  window.URL.createObjectURL(file)
-//         // console.log(file)  
-//     })  
-// }
 
 
 </script>

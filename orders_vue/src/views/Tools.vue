@@ -13,7 +13,6 @@
 
 <script setup>
 import {reactive,defineProps,onMounted} from 'vue'
-//接收父data时，首先定义子data
 const props = defineProps({
     data:null,
 })
@@ -28,10 +27,8 @@ onMounted(()=>{
   obj.x=props.data.x
   obj.y=props.data.y
   obj.number=props.data.number
-  //define定义 child style
   obj.style=`position:relative;top:${obj.y}px;left:${obj.x}px`
 })
-//点击添加徽章
 
 </script>
 <style lang="scss" scoped>

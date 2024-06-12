@@ -26,12 +26,10 @@ import { useStore } from 'vuex';
 const store = useStore()
 const text = ref('')
 const handleadd = () => {
-  console.log(text.value)
   let data = new FormData()
   data.append('text', text.value)
   data.append('type', 'add')
   api.http.post('/typehandle', data).then(response => {
-    console.log(response.data)
     location.reload()
   })
 }
@@ -41,7 +39,6 @@ const handledelete=(te)=>{
   data.append('type', 'delete')
   api.http.post('/typehandle',data).then(
   response=>{
-    console.log(response.data)
     location.reload()
   }
 

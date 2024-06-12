@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <!-- <header></header> -->
 
 
     <v-system-bar window class="end">
@@ -13,7 +12,6 @@
     </v-system-bar>
 
 
-    <!-- main -->
     <v-main>
 
       <v-sheet width="300" class="mx-auto mt-5" v-show="obj.isShow">

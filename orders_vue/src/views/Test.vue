@@ -50,7 +50,6 @@ const send=()=>{
  
  
     onMounted(()=>{
-      // obj.myname=store.state.username
     
     }) 
 
@@ -61,7 +60,6 @@ const send=()=>{
       const wss=new WebSocket(`ws://127.0.0.1:8000/ws/${obj.fromuser}/`)
       wss.send(obj.usertext)
       wss.onmessage=function(event){
-      console.log(event.data)
       obj.datalist.push(event.data)
     }
       
@@ -69,27 +67,23 @@ const send=()=>{
 
 
 
-//点击添加徽章
 const handel=(e)=>{
 
   var x = e.pageX;
-        var y = e.pageY-10;//相对于浏览器
+        var y = e.pageY-10;
         var x = e.pageX-10;
-        var zx=e.offsetX//相对标签
+        var zx=e.offsetX
         var zy=e.offsetY
         var data={x:x,y:y,number:obj.complist.length+1}
         obj.complist.push(data)
         obj.style=`position:absolute;top:${y}px;left:${x}px`
-        console.log(x,y,zx,zy,obj.complist)
 
 }
 function over(id, n, e) {
   document.querySelectorAll('#card')[n].classList.add('bg-blue-darken-3')
-  // e.target.classList.add('bg-primary') bg-blue-darken-3
 }
 function leave(id, n, e) {
   document.querySelectorAll('#card')[n].classList.remove('bg-blue-darken-3')
-  // e.target.classList.remove('bg-primary')
 }
 const handle = (n, url) => {
   // console.log(n)
@@ -104,9 +98,6 @@ const handle = (n, url) => {
   }
 }
 const getorders=()=>{
-  // api.httptk.post('/filterdata',).then(res=>{
-  //   console.log(res.data)
-  // })
 let oneday=86400
   console.log(def.date(def.gettime(new Date())+oneday*30))
   console.log(def.date(def.gettime(new Date())+oneday*15))

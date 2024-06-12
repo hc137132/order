@@ -205,21 +205,16 @@ onMounted(async () => {
 
     var formdata = new FormData()
     formdata.append('id', route.query.orderid)
-    // console.log(route.query)
     api.httpdetail.post('/getorderdetail', formdata).then(res => {
 
-        // type==text 时必须json化再按照index  sort
         obj.data = res.data
-        console.log(obj.data)
         obj.data.contentdetail = JSON.parse(obj.data.contentdetail)
         obj.title = obj.data.title
         obj.type = obj.data.type
-        // console.log(obj.data.contentdetail)
         if (obj.data.deadline === 'None' || obj.data.deadline === 0) {
             obj.checkdate = true
         } else {
             obj.date = new Date(obj.data.deadline * 1000)
-            // console.log(obj.date)
             getdate(obj.date)
         }
         if (obj.data.money === 0) {
@@ -233,9 +228,6 @@ onMounted(async () => {
             var formdata = new FormData()
             formdata.append('t_fid', obj.data.contentdetail.text[n].uuidname)
             formdata.append('email', obj.data.email)
-            //恢复成textlistjson格式
-            // textlistjson: [{ type: 'file', filename: 'file.name', file: null, size: null },
-            //             { type: 'text', content: 'obj.text', index: null }],
             api.httptk.post('/getorderdetail', formdata).then(res => {
                 obj.textlistjson.push({ type: 'text', content: res.data.content, index: n })
             }
@@ -248,41 +240,31 @@ onMounted(async () => {
             obj.textlistjson.push(
                 { type: 'file', filename: obj.data.contentdetail.files[n].filename, file: null, size: null }
             )
-            // handle(obj.data.contentdetail, formdata, n)
             let down=new Filedown()
             down.handle(obj.data.contentdetail, formdata, n)
         }
 
     })
 
-    // console.log(obj.textlistjson)
     obj.today = def.date()
-    // console.log(obj.today)
 })
 
 
 class Filedown{
     handle = (data, formdata, n) => {
-        console.log(n,data,formdata)
         if (data) {
             api.httpdetail.post('/filedown', formdata, {
                 responseType: 'blob',
                 onDownloadProgress: (progressEvent) => {
                     const totalLength = progressEvent.total;
                     const downloadedLength = progressEvent.loaded;
-                    // console.log(totalLength, downloadedLength);
-                    // obj.fileskill = Math.round((downloadedLength / totalLength) * 100);
-                    // console.log(obj.fileskill)
                 }
             }).then(res => {
                 const blob = new Blob([res.data])
                 var fileType = data.files[n].filename.split('.')[1]
-                console.log(fileType)
                 const file = new File([blob], data.files[n].filename, { type: fileType })
                 obj.textlistjson.filter(x => x.filename === data.files[n].filename)[0].file = file
-                // console.log(obj.textlistjson)
                 obj.key++
-                console.log(obj.key)
 
             }
             )
@@ -311,13 +293,10 @@ function handleaddtext() {
     }
     obj.text = ''
 }
-//将预案textlistjson的list data 分类排序成一个新的list====datajson
 const handlelist = () => {
     if (obj.checkdate) {
-        // console.log(obj.checkdate,obj.date)
         obj.datajson.date = '商议'
     } else {
-        // console.log(obj.checkdate,obj.date)
         obj.datajson.date = def.gettime(obj.date, obj.date)
     }
 
@@ -346,10 +325,8 @@ const handlelist = () => {
 
 
     }
-    // console.log(obj.datajson.date)
 
 }
-// click delete
 function handDel(n) {
     obj.textlistjson = obj.textlistjson.filter(function (item) {
         return item != n
@@ -357,20 +334,15 @@ function handDel(n) {
 }
 
 
-onUpdated(() => {
-    console.log('updata')
 
-})
 
 
 function handledrop(event) {
     // event.stopPropagation();
     event.preventDefault();
     event.stopPropagation()
-    console.log('success')
     obj.filesize = 40
     const files = event.dataTransfer.items
-    console.log(files)
     for (const file of files) {
         //  DataTransferItem 对象 
         const item = file.webkitGetAsEntry()
@@ -407,21 +379,15 @@ function uploadDirectory(directory) {
 function enter(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('enter')
     obj.filesize = 70
 }
 function leave(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('leave')
     obj.filesize = 40
 }
 watch(() => obj.date, (newvalue, oldvalue) => {
-    // var year = new Date(newvalue).get FullYear()
-    // var month = new Date(newvalue).getMonth() + 1
-    // var day = new Date(newvalue).getDate()
-    // obj.month = month
-    // obj.newdate = year + '-' + month + '-' + day
+    
     getdate(newvalue)
 
 })
@@ -439,7 +405,6 @@ const getdate = (date) => {
 }
 const handgetfile = (e) => {
     var a = null
-    // console.log(e.target.file)
 
     for (var n = 0; n < e.target.files.length; n++) {
         if (e.target.files[n].size < 2097152000) {
@@ -451,25 +416,22 @@ const handgetfile = (e) => {
         }
 
     }
-    // console.log(obj.textlistjson)
 }
 const handleaddpro = () => {
-    // console.log(obj.textlistjson)
     if (handlealert() === false) {
         obj.alertdialog = true
         return
     }
     var data = new FormData()
     data.append('email', store.state.userdata.email)
-    data.append('title', obj.title)//标题
+    data.append('title', obj.title)
     //timestamp
     if (obj.checkdate) {
         data.append('date', 'None')
     } else {
         data.append('date', def.gettime(obj.date))
     }
-    // console.log(def.gettime(new Date()), def.gettime(obj.date))
-    data.append('createdate', def.gettime(new Date()))//create date
+    data.append('createdate', def.gettime(new Date()))
     data.append('type', obj.type)//project type
     data.append('oldorderid',obj.data.orderid)
     //money
@@ -488,7 +450,6 @@ const handleaddpro = () => {
                 uuidname: textname, index: obj.textlistjson[n].index
             })
         } else {
-            // console.log(obj.textlistjson[n].file.name.split('.').slice(-1))
             let filenewname = uuidv4() + '.' + obj.textlistjson[n].file.name.split('.').slice(-1)[0]
             data.append(filenewname, obj.textlistjson[n].file)
             T_Fdata.files.push({
@@ -518,13 +479,11 @@ if(list.length>0){
 }
 const affirmsend = () => {
 
-    // file and data Upload
     obj.overlay = true
     api.httpdetail.post('/updataorder',obj.fromdata,{
         onDownloadProgress: (progressEvent) => {
                     const totalLength = progressEvent.total;
                     const downloadedLength = progressEvent.loaded;
-                    // console.log(totalLength, downloadedLength);
                     obj.skill = Math.round((downloadedLength / totalLength) * 100);
                 }
     }).then(res=>{

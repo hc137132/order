@@ -36,7 +36,6 @@ const obj=reactive({
 })
 
 onMounted(()=>{
-    console.log(props.data)
     if(props.data.date==='商议'){
         obj.date=props.data.date
 

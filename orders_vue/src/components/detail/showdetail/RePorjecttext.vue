@@ -38,11 +38,9 @@ const obj = reactive({
 const emit = defineEmits(['func'])
 //delete data function
 function handDEL(index) {
-    // console.log(index)
     emit('func', index)
 }
 onMounted(()=>{
-    console.log(props.data)
 })
 function handre(index) {
     if(!obj.showretext){

@@ -176,20 +176,16 @@ const send = () => {
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/usernamedete', data).then(res => {
-    console.log(res.data.code)
-    //dont use email
     if(!obj.emailalert){
     if (res.data.code === 0) {
       obj.emailusename = false
       obj.emailrename = true
     } else if (res.data.code === 1) {
-      //used email
       obj.emailrename = false
       obj.emailusename = true
     } }
 
   })
-  console.log(obj.emailalert,obj.emailusename,obj.emailrename)
   if (obj.email && !obj.emailalert && obj.emailusename===true) {
     obj.emailpage = false
     obj.otppage = true
@@ -197,26 +193,21 @@ const send = () => {
     var data = new FormData()
     data.append('email', obj.email)
     http.post('/emailauth', data).then(res => {
-      console.log(res.data)
       obj.djg_otop = res.data.auth
     })
 
   }
 
 }
-//验证Email是否已被使用
 const emailusename = () => {
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/usernamedete', data).then(res => {
-    console.log(res.data.code)
-    //dont use email
     if(!obj.emailalert){}
     if (res.data.code === 0) {
       obj.emailusename = false
       obj.emailrename = true
     } else if (res.data.code === 1) {
-      //used email
       obj.emailrename = false
       obj.emailusename = true
     }
@@ -278,13 +269,11 @@ const handleac = () => {
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/emailauth', data).then(res => {
-    console.log(res.data)
     obj.djg_otop = res.data.auth
   })
 
 
 }
-//watch otp page
 watch(() => obj.otp, (newvalue) => {
 
   if (newvalue.length === 6 && newvalue === obj.djg_otop) {
@@ -300,7 +289,6 @@ watch(() => obj.otp, (newvalue) => {
   }
 })
 
-//click signin注册 function
 const handlesnginup = () => {
   if (
     obj.password && obj.againpassword && obj.password === obj.againpassword && !obj.passwordalert
@@ -308,9 +296,7 @@ const handlesnginup = () => {
     var formdata = new FormData()
     formdata.append('email', obj.email)
     formdata.append('password', obj.password)
-    console.log(formdata)
     http.post('/signup', formdata).then(res => {
-      console.log(res.data)
     })
     obj.passwordpage = false
     obj.successpage = true
@@ -321,7 +307,6 @@ const handlesnginup = () => {
 }
 //倒计时count down function
 const countA = () => {
-  console.log(obj.backlogintime)
   if (obj.backlogintime <= 0) {
     clearTimeout(ssa)
     router.push('/login')

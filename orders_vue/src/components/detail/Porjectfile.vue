@@ -29,25 +29,18 @@ const props = defineProps({
 })
 const previewFile = (event) => {
     const file = event
-    // console.log(file)
     if (file) {
-        //file to url
         const reader = new FileReader();
         reader.onload = (e) => {
             const url = URL.createObjectURL(file);
             obj.url=url
-    //   const iframe = preview.value;
-        //   console.log(encodeURIComponent(obj.url))
-   //   iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
         };
         reader.readAsDataURL(file);
       }
     };
 
 onMounted(() => {
-    // console.log(props.data)
     previewFile(props.data.file)
-    // console.log(props.data.file.type.split('/'))
     if([ 'png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff','image'].indexOf(props.data.file.type.split('/')[0])>=0){
         obj.mdi='mdi-image'
     }else if(['mp4', 'm2v', 'mkv','video'].indexOf(props.data.file.type.split('/')[0])>=0){
@@ -57,12 +50,10 @@ onMounted(() => {
     }
 
 })
-//open or loading file
 function openmydoc(path) {
     window.open(path, '_blank')
 }
 const handledel=(data)=>{
-    // console.log(data)
     emit('fatherdef',data)
 }
 

@@ -36,9 +36,7 @@ const obj = reactive({
     btntexttool:'编辑'
 })
 const emit = defineEmits(['func'])
-//delete data function
 function handDEL(index) {
-    // console.log(index)
     emit('func', index)
 }
 function handre(index) {

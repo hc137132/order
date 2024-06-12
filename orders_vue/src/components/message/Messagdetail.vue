@@ -132,7 +132,6 @@ watch(() => props.data, (newvalue, oldvalue) => {
     // 改变unread==true
     handlestoreunread(props.data)
 
-    // console.log(props.data.content,newvalue.content)
 
 }, { deep: true })
 
@@ -147,7 +146,6 @@ const handlestoreunread = (data) => {
                 var b = data.content[a]
                 b.unread = true
                 list.push(b)//改变store，
-                // console.log('yes read')
                 handleunread(data.content[a].messageid)//改变indexdb
 
             } else {
@@ -155,39 +153,30 @@ const handlestoreunread = (data) => {
             }
         }
     }
-    //    console.log({contact:data.contact,content:list})
     store.commit('updatemessage', { contact: data.contact, content: list })
 }
-// 消除 indexdb unread
 const handleunread = (id) => {
 
     const request = indexedDB.open('message', 1)
     request.onsuccess = function (event) {
         const db = event.target.result;
-        // 创建一个读写事务  
         const transaction = db.transaction(['message'], 'readwrite');
         const objectStore = transaction.objectStore('message');
 
-        // 使用 get 方法根据主键查找数据  
         const getRequest = objectStore.get(id);
 
         getRequest.onsuccess = function (event) {
             const data = event.target.result;
             if (data) {
-                // 修改数据  
                 data.unread = false;
-                // console.log(data.unread)
-                //   使用 put 方法更新数据  
                 const putRequest = objectStore.put(data);
                 putRequest.onsuccess = function (event) {
-                    // console.log('Data updated successfully');  
                 };
 
                 putRequest.onerror = function (event) {
                     console.error('Error updating data', event.target.errorCode);
                 };
             } else {
-                console.log('No data found for the given primary key');
             }
         };
 
@@ -210,11 +199,9 @@ const handleimage = (imgurl, filename) => {
         const blob = new Blob([u8arr])
         window.navigator.msSaveOrOpenBlob(blob, 'chart-download' + '.' + 'png')
     } else {
-        // 这里就按照chrome等新版浏览器来处理
         const a = document.createElement('a')
         a.href = imgurl
         a.download = filename
-        // a.setAttribute('download', 'chart-download')
         a.click()
     }
 }
@@ -223,7 +210,6 @@ const handleimage = (imgurl, filename) => {
 
 
 const download = (filename, id) => {
-    console.log(filename,id)
     obj.showdown = true
     obj.skill = 0
     var formdata = new FormData()
@@ -234,10 +220,7 @@ const download = (filename, id) => {
         onDownloadProgress: (progressEvent) => {
             const totalLength = progressEvent.total;
             const downloadedLength = progressEvent.loaded;
-            // console.log(totalLength, downloadedLength);
             obj.skill = Math.round((downloadedLength / totalLength) * 100);
-            // console.log(`Download Progress: ${progress}%`);
-            // 在这里更新进度条或者其他 UI
             if(obj.skill===100){
                 obj.showdown=false
             }
@@ -251,7 +234,7 @@ const download = (filename, id) => {
         a.click()
 
     }).catch(error => {
-        ; // 异步操作失败时 reject Promise
+        
     });
 
 }

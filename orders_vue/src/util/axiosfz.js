@@ -1,15 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
 
-// function http(url,header){
-//     return axios({
-//         url:'/api'+url,
-//         headers:{
-
-//         }
-
-//     })
-// }
 
 const http=axios.create({
     baseURL:'/api',
@@ -20,19 +11,14 @@ const http=axios.create({
  })
 
 
-// 拦截器的使用
-// 发请求之前拦截
 http.interceptors.request.use(
     function(config){
-        // console.log(config)
         store.state.loading=true
         return {
             ...config,
-            // aaa:'hecheng'//add data
         }
     },
     function(error){
-        console.log(error)
         return error
     }
 )
@@ -44,7 +30,6 @@ http.interceptors.response.use(req=>{
 
 }, err=>{
 
-    console.log('response error:'+err)
 })
 
 export default http

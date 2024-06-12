@@ -42,16 +42,13 @@ onMounted(() => {
 })
 const previewFile = (event) => {
     const file = event
-    console.log(file)
     if (file) {
         //file to url
         const reader = new FileReader();
         reader.onload = (e) => {
             const url = window.URL.createObjectURL(file);
             obj.url = url
-            //   const iframe = preview.value;
-            //   console.log(encodeURIComponent(obj.url))
-            //   iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+           
         };
         reader.readAsDataURL(file);
     }

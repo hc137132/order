@@ -24,7 +24,6 @@ onMounted(() => {
     let data = new FormData()
     data.append('userid', props.id)
     api.httptk.post('/userdata', data).then(response => {
-      console.log(response.data)
       obj.name = response.data.email
     })
 

@@ -78,11 +78,7 @@
                                         <p style="color:#E53935;">六</p>
                                     </div>
                                 </div>
-                                <!-- <div
-                                    style="position:absolute;top:49%;width:100%;height:19%;display: flex;align-items: center;justify-content: center;z-index:-1;">
-                                    <p style="opacity: 0.2;font-size: 150px;">{{ obj.month }}</p>
-
-                                </div> -->
+                               
                             </v-card>
                         </v-menu>
 
@@ -173,21 +169,14 @@ import def from '@/plugins/getdate'
 import { v4 as uuidv4 } from 'uuid'
 import projectdetail from './Porjectdetail.vue'
 import router from '@/router';
-// import draggable from 'vuedraggable'
 
 
-// 第一个参数是根组件。第二个参数可选，它是要传递给根组件的 props
 
 
 onMounted(() => {
 
-    // for (let index in store.state.type) {
-    //     obj.type.push(store.state.type[index].typename)
-    // }
-    // // console.log(obj.type)
     
     obj.today=def.date()
-    console.log(obj.today)
 })
 
 var obj = reactive({
@@ -233,13 +222,10 @@ function handleaddtext() {
     }
     obj.text = ''
 }
-//将预案textlistjson的list data 分类排序成一个新的list====datajson
 const handlelist = () => {
     if (obj.checkdate) {
-        // console.log(obj.checkdate,obj.date)
         obj.datajson.date = '商议'
     } else {
-        // console.log(obj.checkdate,obj.date)
         obj.datajson.date = def.gettime(obj.date,obj.date)
     }
 
@@ -268,10 +254,8 @@ const handlelist = () => {
 
 
     }
-    // console.log(obj.datajson.date)
 
 }
-// click delete
 function handDel(n) {
     obj.textlistjson = obj.textlistjson.filter(function (item) {
         return item != n
@@ -279,26 +263,18 @@ function handDel(n) {
 }
 
 
-onUpdated(() => {
-    console.log('updata')
 
-})
 
 
 function handledrop(event) {
-    // event.stopPropagation();
     event.preventDefault();
     event.stopPropagation()
-    console.log('success')
     obj.filesize = 40
     const files = event.dataTransfer.items
-    console.log(files)
     for (const file of files) {
-        //  DataTransferItem 对象 
         const item = file.webkitGetAsEntry()
         if (item.isFile) {
             item.file((file) => {
-                // 在这里你可以处理 File 对象的属性，例如 name, size, type 等
                 obj.textlistjson.push(
                     { type: 'file', filename: file.name, file: file, size: file.size })
 
@@ -315,7 +291,6 @@ function uploadDirectory(directory) {
         entries.forEach((entry) => {
             if (entry.isFile) {
                 entry.file((file) => {
-                    // 在这里你可以处理 File 对象的属性，例如 name, size, type 等
                     obj.textlistjson.push(
                         { type: 'file', filename: file.name, file: file, size: file.size })
 
@@ -329,21 +304,15 @@ function uploadDirectory(directory) {
 function enter(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('enter')
     obj.filesize = 70
 }
 function leave(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('leave')
     obj.filesize = 40
 }
 watch(() => obj.date, (newvalue, oldvalue) => {
-    // var year = new Date(newvalue).get FullYear()
-    // var month = new Date(newvalue).getMonth() + 1
-    // var day = new Date(newvalue).getDate()
-    // obj.month = month
-    // obj.newdate = year + '-' + month + '-' + day
+    
     getdate(newvalue)
 
 })
@@ -361,7 +330,6 @@ const getdate = (date) => {
 }
 const handgetfile = (e) => {
     var a = null
-    // console.log(e.target.file)
 
     for (var n = 0; n < e.target.files.length; n++) {
         if (e.target.files[n].size < 2097152000) {
@@ -373,33 +341,27 @@ const handgetfile = (e) => {
         }
 
     }
-    // console.log(obj.textlistjson)
 }
 const handleaddpro = () => {
-    // console.log(obj.textlistjson)
     if (handlealert() === false) {
         obj.alertdialog = true
         return
     }
     var data = new FormData()
     data.append('email', store.state.userdata.email)
-    data.append('title', obj.title)//标题
-    //timestamp
+    data.append('title', obj.title)
     if (obj.checkdate) {
         data.append('date', 'None')
     } else {
         data.append('date', def.gettime(obj.date))
     }
-    // console.log(def.gettime(new Date()), def.gettime(obj.date))
     data.append('createdate', def.gettime(new Date()))//create date
     data.append('type', obj.selecttype)//project type
-    //money
     if (obj.checkmoney) {
         data.append('money', 0)
     } else {
         data.append('money', obj.money)
     }
-    //text and files
     var T_Fdata = { text: [], files: [] }//text:[{,uuidname:'',index:x}],file:[{uuidname:'',filename:''}]
     for (var n in obj.textlistjson) {
         if (obj.textlistjson[n].type === 'text') {
@@ -409,7 +371,6 @@ const handleaddpro = () => {
                 uuidname: textname, index: obj.textlistjson[n].index
             })
         } else {
-            // console.log(obj.textlistjson[n].file.name.split('.').slice(-1))
             let filenewname = uuidv4() + '.' + obj.textlistjson[n].file.name.split('.').slice(-1)[0]
             data.append(filenewname, obj.textlistjson[n].file)
             T_Fdata.files.push({
@@ -418,7 +379,6 @@ const handleaddpro = () => {
         }
     }
     T_Fdata.text=sortarray(T_Fdata.text)
-    console.log(T_Fdata)
     data.append('tfdata', JSON.stringify(T_Fdata))
     var reg1 = new RegExp("-", "g")
     data.append('orderid', uuidv4().replace(reg1, ""))
@@ -429,19 +389,16 @@ const handleaddpro = () => {
 }
 const affirmsend = () => {
 
-    // file and data Upload
     obj.overlay = true
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/addorder', true);
     xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
             obj.skill = Math.round((e.loaded / e.total) * 100);
-            console.log(obj.skill)
         }
     };
     xhr.onload = () => {
         if (xhr.status === 200) {
-            console.log('Upload successful');
             obj.overlay = false
             router.push('/userhome/myproject')
         } else {
@@ -455,19 +412,15 @@ const affirmsend = () => {
     };
     xhr.onreadystatechange = function () {//Call a function when the state changes.
         if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {//xhr.readyState == 4等价于XMLHttpRequest.DONE
-            // 请求结束后,在此处写处理代码
-            //alert(xhr.responseText);
 
-            var responseText = xhr.responseText;//返回结果
+            var responseText = xhr.responseText;
 
             var obj = JSON.parse(responseText);
-            console.log(obj.code)
           
         }
     }
 
     xhr.send(obj.fromdata);
-    // obj.overlay = false
     obj.senddialog = false
     
 

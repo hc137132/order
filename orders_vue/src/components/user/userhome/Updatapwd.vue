@@ -83,7 +83,6 @@ const obj = reactive({
 watch(() => obj.napassword, (newpwd, oldpwd) => {
     if (newpwd && newpwd !== obj.npassword) {
         obj.istool = true
-        console.log('ssss')
     } else {
         obj.istool = false
     }
@@ -104,7 +103,6 @@ const handleupdatepwd = () => {
         formdata.append('pwd', obj.password)
         formdata.append('newpwd', obj.npassword)
         api.httptk.post('/repwd',formdata).then(res => {
-            console.log(res.data)
             if (res.data.code === 'success') {
                 router.push('/userhome/user')
             } else {

@@ -44,8 +44,6 @@ const obj = reactive({
 
 onBeforeMount(() => {
 
-    // data.value = props.data
-    // console.log(props.data.title)
     if(props.data.deadline<300){
         obj.date='商议'
     }else{

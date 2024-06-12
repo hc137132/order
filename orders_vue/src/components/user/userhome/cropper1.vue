@@ -1,6 +1,6 @@
 <template>
-  <div class="d-flex align-center justify-space-around">
-    <div class="img-container text-center d-flex align-center justify-center" @dragenter="enter" @drop="handledrop"
+  <div class="d-flex align-center justify-start">
+    <div class="img-container text-center d-flex align-center justify-center mr-5 ml-5" @dragenter="enter" @drop="handledrop"
       @dragleave="leave" @dragover.prevent>
       <img :src="obj.url" v-show="obj.url" ref="image" style="max-width: 200px;max-height: 150px;">
       <v-sheet v-show="!obj.url">
@@ -10,8 +10,10 @@
 
     </div>
 
-    <v-sheet width="100" class="text-center">
-      <div class="before" style="width: 100px;height: 100px;border-radius: 50% 50%;"> </div>
+    <v-sheet width="100" class="text-center ml-5">
+      <v-sheet width="100%" class="d-flex justify-center">
+      <div class="before " style="width: 100px;height: 100px;border-radius: 50% 50%;"> </div>
+    </v-sheet>
       <div class="d-flex align-center justify-space-around mt-3">
 
         <v-btn onclick="document.getElementById('aaaa').click()" color="primary" prepend-icon="mdi-file"> 选择文件</v-btn>
@@ -21,7 +23,6 @@
 
     </v-sheet>
 
-    <!-- <img :src="obj.afterImg" alt=""> -->
 
   </div>
 
@@ -46,10 +47,7 @@ const obj = reactive({
 })
 const image = ref(null)
 
-// onMounted(() => {
-//   init()
-// }
-// )
+
 
 
 const changefile = (e) => {
@@ -59,12 +57,7 @@ const changefile = (e) => {
   reader.readAsDataURL(file)
   reader.onload = function (e) {
     obj.url = e.target.result
-    // console.log(obj.url)
-    // var url = e.result.substring(e.result.indexOf(",") + 1);
-    // obj.url = "data:image/png;base64," + url;
-    // that.$refs['imgimg'].setAttribute('src','data:image/png;base64,'+url);
     image.src = obj.url
-    //判断是否创建实例，如果有就delete
 
     init()
     obj.myCropper.replace(image.src)
@@ -91,35 +84,23 @@ const init = () => {
     autoCropArea: 0.6,
     zoomOnWheel: false,
     center: false,
-    // autoCropArea: 1,//剪裁框和图片最窄边缘的比例（1为饱满
     ready: function () {
-      // 显示当前裁剪框的位置和尺寸
-      // console.log(obj.myCropper.getData());
     },
   })
 
 
 
-  // console.log(obj.myCropper.getCanvasData())
 }
 
 
 function handledrop(event) {
-  // event.stopPropagation();
   event.preventDefault();
-  console.log('success')
   obj.filesize = 50
   const file = event.dataTransfer.files[0]
-  // console.log(file)
-  // obj.filename = file[0].name
   const reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = function (e) {
     obj.url = e.target.result
-    // console.log(obj.url)
-    // var url = e.result.substring(e.result.indexOf(",") + 1);
-    // obj.url = "data:image/png;base64," + url;
-    // that.$refs['imgimg'].setAttribute('src','data:image/png;base64,'+url);
     image.src = obj.url
 
     init()
@@ -132,15 +113,12 @@ function handledrop(event) {
 function enter(event) {
   event.stopPropagation();
   event.preventDefault();
-  obj.div = event.target//这一步是用来确定进入的div是谁，以确保进入子元素的时候样式不改变，
-  // console.log('enter',)
+  obj.div = event.target
   obj.filesize = 70
 }
 function leave(event) {
   event.stopPropagation();
   event.preventDefault();
-  // console.log('leave',)
-  //这一步就是验证是否离开进来的div时，也就是真正的离开，而不是进入子元素也改变
   if (event.target === obj.div) {
     obj.filesize = 50
   } else {
@@ -155,15 +133,12 @@ const sureSava = () => {
     }).toDataURL('image/jpeg')
   }
 
-  // console.log(obj.afterImg)
-  //child send father,second augrment is send value
   emit('geturl', obj.afterImg)
 }
 
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .container {
   display: flex;
@@ -173,7 +148,6 @@ const sureSava = () => {
   width: 100px;
   height: 100px;
   overflow: hidden;
-  /* 这个属性可以得到想要的效果 */
 }
 
 .img-container {

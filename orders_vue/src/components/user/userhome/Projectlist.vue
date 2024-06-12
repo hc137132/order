@@ -210,16 +210,10 @@ const obj = reactive({
 })
 
 onMounted(() => {
-    // window.onresize = function () {
-    //     //   console.log("宽度", document.documentElement.clientWidth);
-    //     //   console.log("高度", document.documentElement.clientHeight);
-    //     obj.width = document.documentElement.clientWidth
-    // }
-    // obj.width = document.documentElement.clientWidth
+ 
     var data = new FormData()
     data.append('email', store.state.userdata.email)
     api.httptk.post('/getorders', data).then(res => {
-        console.log(res.data)
         obj.resdatalist = res.data.datalist
         obj.olddatalist = res.data.datalist
         //sort
@@ -235,7 +229,6 @@ watch(() => obj.page, () => {
     page()
 })
 const orderdeadline=(date)=>{
-    console.log(date)
     if(date===null || date===0 ||date===100){
         return '商议'
     }else{
@@ -265,7 +258,6 @@ const handleicon = (icon, item) => {
             if (icon === '商议') {
 
                 obj.resdatalist = obj.olddatalist.filter(x => x.deadline === 'None')
-                // console.log(obj.resdatalist, obj.resdatalist.length)
 
             } else if (icon === 'mdi-sort-descending') {
                 obj.deadlineicon = 'mdi-sort-ascending'
@@ -347,22 +339,18 @@ const handleicon = (icon, item) => {
 const page = () => {
 
     var len = obj.resdatalist.length
-    // 总行数取余页面大小，等于0，则页数为整页数，否则有余数，则页数为正页数加一
     if (len % 7 == 0) {
         obj.pagelen = len / 7
     } else {
         obj.pagelen = Math.ceil(len / 7)
     }
-    console.log(len, obj.pagelen)
     obj.datalist = obj.resdatalist.slice((obj.page - 1) * 7, (obj.page - 1) * 7 + 7)
 
 }
 function add() {
     router.push('/userhome/myproject/addproject')
 }
-onUpdated(() => {
-    console.log(222)
-})
+
 
 const search = () => {
     if (!obj.searchtext) {
@@ -395,7 +383,6 @@ const search = () => {
 }
 
 const handledetail = (data) => {
-    console.log(data)
     router.push({
         path: '/userhome/detail', query: {
             orderid: data.orderid
@@ -406,16 +393,13 @@ const handledetail = (data) => {
 const handledelete = (data) => {
     obj.showdel = true
     obj.deldata = data
-    console.log(data)
 }
 const dialog = (data) => {
     obj.showdel = false
-    console.log(22222)
     var formdata = new FormData()
     formdata.append('oldorderid', data.orderid)
     formdata.append('email', store.state.userdata.email)
     api.httptk.post('/updataorder', formdata).then(res => {
-        console.log(res.data)
         if (res.data.code === 0) {
             router.push('/404')
 

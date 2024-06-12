@@ -171,7 +171,6 @@ watch(() => obj.username, () => {
     var data = new FormData()
     data.append('username', obj.username)
     http.post('/usernamedete', data).then(res => {
-      console.log(res.data)
       if(res.data.code===0){
         obj.usernamedate=false
         obj.usernamere=true
@@ -237,7 +236,6 @@ const send = () => {
     var data = new FormData()
     data.append('email', obj.email)
     http.post('/emailauth', data).then(res => {
-      console.log(res.data)
       obj.djg_otop = res.data.auth
     })
 
@@ -251,9 +249,7 @@ const signupsend = () => {
   formdata.append('username', obj.username)
   formdata.append('email', obj.email)
   formdata.append('password', obj.password)
-  console.log(formdata)
   http.post('/signup', formdata).then(res => {
-    console.log(res.data)
 
   })
 }
@@ -280,7 +276,6 @@ const handleac = () => {
   var data = new FormData()
   data.append('email', obj.email)
   http.post('/emailauth', data).then(res => {
-    console.log(res.data)
     obj.djg_otop = res.data.auth
   })
 

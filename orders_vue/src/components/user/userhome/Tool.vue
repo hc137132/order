@@ -68,10 +68,10 @@
                             <v-btn color="primary" @click="obj.dialog = true" text="修改"></v-btn>
 
                             <v-dialog v-model="obj.dialog" width="auto">
-                                <v-card width="500" title="Update the Avatar">
+                                <v-card width="500" title="Update Your Avatar">
                                     <Updataavatar @geturl="geturl"></Updataavatar>
                                     <template v-slot:actions>
-                                        <v-btn class="ms-auto" text="Ok" @click="obj.dialog = false"></v-btn>
+                                        <v-btn class="ms-auto" text="取消" @click="obj.dialog = false"></v-btn>
                                     </template>
                                 </v-card>
                             </v-dialog>
@@ -170,7 +170,6 @@ const obj = reactive({
 onBeforeMount(() => {
     obj.userdata = store.state.userdata
     obj.arr.forEach((val) => {
-        // console.log(obj.userdata,obj.userupdata,store.state.userdata)
         obj.userupdata[val] = store.state.userdata[val]
 
     })
@@ -181,12 +180,10 @@ onBeforeMount(() => {
 
 const geturl = (val) => {
     if (val) {
-        // console.log(val)
         obj.image = val
         obj.userupdata.avatar = val
     }
     obj.dialog = false
-    // console.log(val)
 }
 
 onMounted(() => {
@@ -203,15 +200,11 @@ function getfile(e) {
     var newimg = window.URL.createObjectURL(files[0])
     obj.image = newimg
     obj.filename = files[0].name
-    console.log(obj.filename)
 }
 function handledrop(event) {
-    // event.stopPropagation();
     event.preventDefault();
-    console.log('success')
     obj.filesize = 40
     const file = event.dataTransfer.files
-    console.log(file)
     var newimg = window.URL.createObjectURL(file[0])
     obj.filename = file[0].name
     obj.image = newimg
@@ -220,23 +213,18 @@ function handledrop(event) {
 function enter(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('enter')
     obj.filesize = 70
 }
 function leave(event) {
     event.stopPropagation();
     event.preventDefault();
-    console.log('leave')
     obj.filesize = 40
 }
 const updatauser = () => {
     obj.userupdatashow = !obj.userupdatashow
     obj.show = !obj.show
 }
-// // watch(()=>obj.userupdata,()=>{
-//     console.log(obj.userupdata,obj.userdata)
 
-// })
 
 
 
@@ -245,20 +233,14 @@ const handupdata = () => {
     var data = new FormData()
     data.append('email', obj.userdata.email)
     obj.arr.forEach((val) => {
-        // console.log(obj.userupdata)
         if (obj.userdata[val] != obj.userupdata[val] && obj.userupdata[val]!== '') {
-            // console.log(obj.userupdata)
             data.append(val, obj.userupdata[val])
-            //    console.log(obj.userupdata)
         }else if(obj.userdata[val] != obj.userupdata[val] && obj.userupdata[val] === ''){
             data.append(val, '%Null%')
         }
     })
-       console.log(data)
     api.httptk.post('/userupdate', data).then(res => {
-        console.log(res.data)
         api.httptk.post('/userdata', data).then(res => {
-                console.log(res.data)
                 store.commit('updatauser', res.data)//updateuser)
                 location.reload()
 

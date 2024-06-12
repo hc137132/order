@@ -118,14 +118,12 @@ const obj = reactive({
     skill: 0,
 })
 const handleunread = (data) => {
-    console.log()
     var unread = 0
     for (var a of data.content) {
         if (!a.unread && data.contact === a.from) {
             unread++
         }
     }
-    // console.log(unread)
     return unread
 }
 
@@ -146,13 +144,7 @@ watch(() => obj.search, (value, oldvalue) => {
 
 
 })
-watch(() => store.state.createchat, () => {
-    console.log('createchatclickMessage')
-    //   if(store.state.createchat){
-    //     handlecreatechat( store.state.messagelist[0], 0)
-    //   }
-})
-// 客服端 to server
+
 const send =async() => {
 
     if (!store.state.ws || !obj.nowcontact ||obj.text===''||obj.text.trim()==='') {
@@ -165,7 +157,6 @@ const send =async() => {
     }
     store.state.ws.send(JSON.stringify(data))
     DBadd(data)//add indexdb
-    // 添加到store
     store.commit('addmessage', { a: obj.nowcontact, b: data })
     await claen()
     
@@ -173,28 +164,23 @@ const send =async() => {
 const claen=async()=>{
     obj.text=''
 }
-//send消息receive or send a message add indexdb
 const DBadd = (message) => {
     if (!store.state.db) {
         console.error('Database is not ready');
         return;
     }
-    // console.log(message)
     const tx = store.state.db.transaction(['message'], 'readwrite');
     const store1 = tx.objectStore('message');
     store1.add(message).onsuccess = function (event) {
-        console.log('Message added indexDB successfully');
     };
 }
 
 const handlecreatechat = (data, index) => {
     var ele = document.querySelectorAll('.ashow')
     var ava = document.querySelectorAll('.av')
-    // console.log(data)
     obj.nowcontact = data.contact
     obj.messagedetail = data
     obj.nowindex = index
-    console.log(obj.messagedetail)
     for (var n = 0; n < ele.length; n++) {
 
         ele[n].classList.remove('ahover')
@@ -213,11 +199,9 @@ function handleFileDrop(event) {
 }
 
 function uploadFiles() {
-    // 在这里执行文件上传操作
     handlefileuopload(document.getElementById("fileField").files[0])
 }
 const handlefileuopload = async(file) => {
-    // 弹出对话框选择是否发送文件
     let filenamelist = file.name.split('.').length - 1
     if (['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff', 'image'].indexOf(file.name.split('.')[filenamelist]) >= 0) {
         //
@@ -225,7 +209,6 @@ const handlefileuopload = async(file) => {
         reader.onload = function (e) {
             const base64String = e.target.result;
 
-            // console.log('图片读取的Base64的值为--->', base64String);
             var data = {
                 messageid: uuidv4(), from: store.state.userdata.userid, to: obj.nowcontact,
                 type: 'image', content: base64String, uuidname: file.name, senddate: def.gettime(new Date()), unread: false
@@ -233,7 +216,6 @@ const handlefileuopload = async(file) => {
 
             store.state.ws.send(JSON.stringify(data))
             DBadd(data)//add indexdb
-            // 添加到store
             store.commit('addmessage', { a: obj.nowcontact, b: data })
 
         };
@@ -242,12 +224,10 @@ const handlefileuopload = async(file) => {
         obj.showup = true
         obj.skill=0
         let uuidname = uuidv4() + '.' + file.name.split('.').slice(-1)
-        // console.log('图片读取的Base64的值为--->', base64String);
         var data = {
             messageid: uuidv4(), from: store.state.userdata.userid, to: obj.nowcontact,
             type: 'file', content: file.name, uuidname: uuidname, senddate: def.gettime(new Date()), unread: false
         }
-        console.log(data)
        
         var fromdata = new FormData()
         fromdata.append('file', file)
@@ -263,14 +243,11 @@ const handlefileuopload = async(file) => {
                 }
             }
         }).then(response => {
-            console.log(response.data)
             obj.showup = false
         })
-        console.log(uuidname)
 
         store.state.ws.send(JSON.stringify(data))
         DBadd(data)//add indexdb
-        // 添加到store
          store.commit('addmessage', { a: obj.nowcontact, b: data })
 
     }

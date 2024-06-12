@@ -8,7 +8,6 @@
             <v-icon color="#03A9F4" icon="mdi-home" size="30"></v-icon>
          大厅
         </v-btn>
-      <!-- 未登录 -->
       <span class="text-center mr-5" v-if="!store.state.login">
 
         <v-btn class="rounded-pill" @click="login">
@@ -16,7 +15,6 @@
           login/登录
         </v-btn>
       </span>
-      <!-- 已登录 -->
 
 
       <span v-if="store.state.login">
@@ -25,14 +23,12 @@
           <v-tooltip activator="parent" location="bottom">个人中心</v-tooltip>
         </v-btn>
 
-        <!-- 以下是消息,必须要使用对话框 -->
         <v-btn class="rounded-pill"  @click="obj.message=true">    
                 <v-icon color="light-blue" icon="mdi-message-outline" size="30" ></v-icon><v-badge :content="obj.sumunread" v-if="obj.sumunread!=0" color="error" offset-y="-10"> </v-badge>
               <v-tooltip activator="parent" location="bottom">消息</v-tooltip>
             </v-btn>
         <v-dialog width="auto" transition="dialog-top-transition" v-model="obj.message">
 
-          <!-- 弹出的对话框 -->
          
             <message> </message>
           
@@ -92,13 +88,10 @@ const obj=reactive({
 
 const login = () => {
   router.push('/login')
-  console.log(555)
 }
 onMounted(() => {
   api.httptk.get('/typehandle').then(res => {
-    // console.log(res.data)
     store.commit('typehandle', res.data)//updateuser)
-    // location.reload()
   })
   if(store.state.login && !store.state.ws){
     wskt.startchat()
@@ -123,13 +116,11 @@ watch(()=>store.state.login,()=>{
   }
 
 })
-//show app-message unread number 
 watch(()=>store.state.messagelist,()=>{
   obj.sumunread=0
   
       for(let a of store.state.messagelist){
           for(let b of a.content){
-            // console.log(b)
               if(b && b.to===store.state.userdata.userid && !b.unread){
                 obj.sumunread++
               }
@@ -139,7 +130,6 @@ watch(()=>store.state.messagelist,()=>{
 },{deep:true})
 
 watch(()=>store.state.openmessage,()=>{
-  console.log('create chat click APP')
     obj.message=true
 
 })

@@ -39,7 +39,6 @@ export default createStore({
     },
     test(state,data){
       state.test=data
-      console.log('test success')
     },
     updatauser(state, data) {
       state.userdata = data
@@ -62,11 +61,9 @@ export default createStore({
       state.messagelist=data
     },
     updatemessage(state,data){
-      // console.log(data)
       for(let a in state.messagelist){
         if(state.messagelist[a].contact==data.contact){
           state.messagelist[a].content==data.content
-          // console.log(state.messagelist[a])
         }
       } 
       
@@ -86,7 +83,6 @@ export default createStore({
     createchat(state,userdata){
       
       state.messagelist.unshift({contact:userdata.userid,content:[],userdata:userdata})
-      // console.log({contact:userdata.userid,content:[],userdata:userdata})
     },
     createDB(state,data){
         state.db=data
@@ -98,7 +94,6 @@ export default createStore({
       if(str){
         let lsIN=state.messagelist.filter(item => item.userdata.email.includes(str))
         let lsNO=state.messagelist.filter(item => !item.userdata.email.includes(str))
-        console.log(lsIN,lsNO)
         state.messagelist=[...lsIN, ...lsNO]
       }
     }
@@ -109,12 +104,10 @@ export default createStore({
   modules: {
   },
   plugins: [
-    // 持久化插件
     createPersistedstate({
       storage: window.sessionStorage,
       reducer(state) {
         return {
-          // 只储存state中的dataList
           userdata: state.userdata,
           login:state.login
 
