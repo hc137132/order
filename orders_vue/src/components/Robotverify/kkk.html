@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+          .content{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height:100vh;
+        background-color: lightgrey;
+    }
+    .left{
+        width:60%;
+        height:80%;
+        margin: auto;
+    }
+    .img-wrap{
+        width: 100%;
+        height: 100%;
+        margin:auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+    .img-select{
+        position:absolute;
+    }
+    .img-select:hover{
+        cursor: move;
+    }
+    .mask{
+        width:180px;
+        height:180px;
+        border-radius: 50%;
+        z-index: 1;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2000px rgba(0,0,0,0.7);
+    }
+    .range{
+        margin: 15px auto;
+        width: 100%;
+    }
+    .preview-wrap{
+        width:30%;
+        margin-right: 30px;
+    }
+    .avatar-wrap{
+        width:180px;
+        height: 180px;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        border:3px solid white;
+        margin: 0 auto;
+        background-color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .canvas{
+        width: 100%;
+        height: 100%;
+    }
+    .button-wrap{
+        margin: 0 100px;
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left">
+            <div class="img-wrap">
+                <img class="img-select" src="../../assets/image/andrew-kliatskyi-k7XTD-HCZAw-unsplash.jpg" alt="">
+                <div class="mask"></div>
+            </div>
+            <input class="range" min="0" max="100" value="50" step="1" type="range">
+        </div>
+        <div class="preview-wrap">
+            <div class="avatar-wrap">
+                <canvas class="canvas"></canvas>
+            </div>
+            <div class="button-wrap">
+                <button class="clip">剪裁</button>
+                <button class="save">保存</button>
+                <button class="reset">重置</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script>
+var [img_wrap,img,mask,range]=[$(".img-wrap"),$(".img-select"),$(".mask"),$(".range")];
+var [clip,save,reset]=[$(".clip"),$(".save"),$(".reset")];
+
+// 定义遮罩层镂空区域的宽、高变量及其左上角相对于父元素的x,y坐标值
+var [mask_w,mask_h]=[mask.width(),mask.height()];
+var [mask_x,mask_y]=[mask.position().left,mask.position().top];
+
+// 定义图像初始宽度和滑动条的初始值
+const iw=Math.min(img.width(),img_wrap.width()); // 若图像过大则将初始宽度设为与父元素等宽
+const rv=range.val();
+
+// 定义图像及滑动条宽度变量、最小最大宽度、图像宽度的单位变动量
+var [w,dw,min_w,max_w,v]=[iw,0.1*iw,0.5*iw,1.5*iw,parseInt(rv)];
+
+// 初始化图像宽度
+img.width(iw);
+
+// 在图像的父元素上绑定鼠标滚轮事件
+// dw为单位变动量，设置为图像初始化宽度的10%
+// 即：鼠标滚轮每滚动一次，图像宽度的变化量为初始化宽度的10%，从左到右共可滚10次
+// 自定义函数checkArea()用于检查和防止图像缩放后跑出镂空区域
+img_wrap.on("mousewheel",function (e) {
+    if (e.originalEvent.wheelDelta>0 && w<max_w){  // 向上滚动放大但不超出最大宽度
+        w+=dw;v+=10;
+        img.width(Math.max(w,mask_w));range.val(v);  //  设置滑动条联动
+        checkArea(img);
+    }else if (e.originalEvent.wheelDelta<0 && w>min_w){  
+        w-=dw;v-=10;
+        img.width(Math.max(w,mask_w));range.val(v);
+        checkArea(img);
+    }
+})
+
+// 通过滑动条进行图片缩放
+// rv为滑动条初始值，this.value为滑动条当前值，两者差为滑动条变动量
+// 由于滑动条的step设为1，鼠标滚轮的step为10，因而需转化为图像宽度变化量
+range.change(function () {img.width(iw+(dw*(this.value-rv)/10));})
+
+// 该自定义函数确保图像始终完全覆盖镂空区域
+// 如果当前图像的左边线x轴值或上边线y轴值超出镂空区域的左边线x轴值或上边线y轴值
+// 或者当前图像的右边线x轴值或下边线y轴值低于镂空区域的右边线x轴值或下边线y轴值
+// 则将图片位置设为相对镂空区域居中
+function checkArea(el) {
+    var [w,h]=[el.width(),el.height()];
+    var [x,y]=[el.position().left,el.position().top];
+    if (x>mask_x || y>mask_y || x+w<mask_x+mask_w || y+h<mask_y+mask_h){
+        el.css({
+            "left":mask_x-(w-mask_w)/2+"px",
+            "top":mask_y-(h-mask_h)/2+"px"
+        })
+    }
+}
+
+// 监听窗口大小变化，防止因窗口大小改变导致图片跑出镂空区域的情况
+$(window).resize(function () {
+    [mask_x,mask_y]=[mask.position().left,mask.position().top];
+    checkArea(img);
+})
+
+// 本示例中添加了拖动范围限制，以防止出现镂空区域留白的情况。
+img.mousedown(function (e) {
+    e.preventDefault();
+    var [mouse_ix,mouse_iy]=[e.clientX,e.clientY];  // 鼠标初始位置
+    var [img_ix,img_iy]=[img.position().left,img.position().top];  // 图像初始位置
+    img.mousemove(function (e) {
+        var [mouse_nx,mouse_ny]=[e.clientX,e.clientY];  // 鼠标当前位置
+        var [dx,dy]=[mouse_nx-mouse_ix,mouse_ny-mouse_iy];  // 计算鼠标位移
+        var [img_nx,img_ny]=[img_ix+dx,img_iy+dy];  // 根据鼠标位移计算出的图像新位置
+        var [max_x,max_y]=[mask_x,mask_y];  // 设置图像往右、往下移动的极限坐标值
+        var min_x=mask_x-img.width()+mask.outerWidth();  // 设置图像往左移动的极限坐标值
+        var min_y=mask_y-img.height()+mask.outerHeight();  // 设置图像往上移动的极限坐标值
+
+        // 若根据鼠标位移计算的图像新位置跑出镂空区域，则重新设置图像位置为相对镂空区域居中
+        img_nx>max_x?img_nx=max_x:img_nx<min_x?img_nx=min_x:img_nx;
+        img_ny>max_y?img_ny=max_y:img_ny<min_y?img_ny=min_y:img_ny;
+        img.css({"left":img_nx+"px","top":img_ny+"px"});
+    })
+    // 鼠标松开按键或离开图像元素后，解除图片元素绑定的鼠标移动事件
+    img.mouseleave(function () {img.off("mousemove");})
+    img.mouseup(function () {img.off("mousemove");})
+})
+
+// 3. 图片剪裁与预览
+
+// 图片缩放会导致剪裁出来的局部图片与原始
+// 尺寸图片的像素质量有差别。为确保质量一致，本示例在剪裁时，
+// 会根据缩放率将图片还原为在原始尺寸的图片上进行剪裁，这样剪裁出的图片像素质量与原始图片相同，但实际尺寸会因缩放率不同而大小不一。
+var canvas=$(".canvas")[0];
+var [img_w,img_h]=[img[0].naturalWidth,img[0].naturalHeight];  // 获取图像原始尺寸的宽高
+var isClipped=false;
+clip.click(function () {
+    var ctx=canvas.getContext("2d");
+    var [ratio_w,ratio_h]=[img_w/img.width(), img_h/img.height()];  // 图像缩放倍数
+    var [clip_x,clip_y]=[mask_x-img.position().left,mask_y-img.position().top]; // 剪裁定位点相对于当前图像的坐标
+    [canvas.width, canvas.height]=[mask_w*ratio_w, mask_h*ratio_h];  // 根据图像原始尺寸调整画布大小
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // 绘制前先清空画布
+
+    // 根据当前的定位点和剪裁区域，结合当前的缩放率，在原始图像上进行剪裁
+    // clip_x*ratio_w和clip_y*ratio_h为原始尺寸图像上的剪裁定位点（剪裁图像的左上角）的坐标
+    // mask_w*ratio_w和mask_h*ratio_h为以原始尺寸图像为基准的剪裁大小（宽高）
+    // 将剪裁图像绘满整个画布，参数设置为：0,0,canvas.width,canvas.height
+    ctx.drawImage(img[0], clip_x*ratio_w,clip_y*ratio_h,mask_w*ratio_w,mask_h*ratio_h,0,0,canvas.width,canvas.height);
+    isClipped=true;
+    reset.click(function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        isClipped=false;
+    })
+})
+// 4. 图片下载保存
+
+save.click(function () {
+    if (isClipped){
+        var d_link=document.createElement('a');
+        d_link.download="avatar"+(new Date().getTime());
+        d_link.href=canvas.toDataURL();
+        d_link.click();
+    }
+})
+    </script>
+</body>
+</html>
