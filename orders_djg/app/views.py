@@ -602,45 +602,45 @@ def payment(request):
         orderid=request.POST.get('orderid')
         userid=request.POST.get('userid')
         # alipay = AliPay(
-        #     appid="your_app_id",#支付宝分配给你的应用 ID。可以在支付宝开放平台的应用管理页面找到。
-        #     app_notify_url=None,  # 默认回调 url用于接收支付宝的支付结果通知。如果不设置，则使用订单生成时指定的 notify_url。
-        #     app_private_key_path=os.path.join("path_to_your_private_key.pem"),#应用私钥的文件路径。用于对请求进行签名。
-        #     alipay_public_key_path=os.path.join("path_to_alipay_public_key.pem"),#支付宝公钥的文件路径。用于验证支付宝返回结果的签名。
+        #     appid="your_app_id",
+        #     app_notify_url=None,  #
+        #     app_private_key_path=os.path.join("path_to_your_private_key.pem"),
+        #     alipay_public_key_path=os.path.join("path_to_alipay_public_key.pem")。
         #     sign_type="RSA2",
-        #     debug=True  # 沙箱环境
+        #     debug=True  #
         # )
 
-        # 生成订单信息
+
         # order_string = alipay.api_alipay_trade_page_pay(
-        #     out_trade_no=orderid, # 商户订单号，需要保证唯一性
-        #     total_amount="100.00", # 订单总金额，单位为元
+        #     out_trade_no=orderid,
+        #     total_amount="100.00",
         #     subject="Order {}".format(orderid),# 订单标题
-        #     return_url="https://your_domain.com/paymentresult", # 用户付款成功后跳转的页面
-        #     notify_url="https://your_domain.com/paymentresult"# 支付结果通知的 URL
+        #     return_url="https://your_domain.com/paymentresult",
+        #     notify_url="https://your_domain.com/paymentresult"
         # )
         #
         # payment_url = "https://openapi.alipaydev.com/gateway.do?" + order_string
-        # qr_code_url = "https://openapi.alipaydev.com/gateway.do?" + order_string  # 示例，仅用于说明
+        # qr_code_url = "https://openapi.alipaydev.com/gateway.do?" + order_string
         #
         response_data = {
             'paymentUrl':' payment_url',
             'qrCodeUrl': 'qr_code_url'
         }
-
+        ProjectDetail.objects.filter(orderid=orderid).update(payment=True)
         return JsonResponse(response_data)
 
 
 @require_POST
 @csrf_exempt
 def payment_notify(request):
-    # 配置支付宝客户端
+
     # alipay = AliPay(
     #     appid="your_app_id",
-    #     app_notify_url=None,  # 默认回调 url用于接收支付宝的支付结果通知。如果不设置，则使用订单生成时指定的 notify_url。
-    #     app_private_key_path=os.path.join("path_to_your_private_key.pem"),  # 应用私钥的文件路径。用于对请求进行签名。
-    #     alipay_public_key_path=os.path.join("path_to_alipay_public_key.pem"),  # 支付宝公钥的文件路径。用于验证支付宝返回结果的签名。
+    #     app_notify_url=None,
+    #     app_private_key_path=os.path.join("path_to_your_private_key.pem"),
+    #     alipay_public_key_path=os.path.join("path_to_alipay_public_key.pem"),  。
     #     sign_type="RSA2",
-    #     debug=True  # 沙箱环境
+    #     debug=True
     # )
 
     data = request.POST.dict()

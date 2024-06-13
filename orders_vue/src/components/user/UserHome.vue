@@ -96,14 +96,15 @@ onBeforeMount(() => {
      var data = new FormData()
     data.append('email', store.state.userdata.email)
     api.httptk.post('/userdata', data).then(res => {
-                store.commit('updatauser', res.data)//updateuser)
-                location.reload()
+                store.commit('updatauser', res.data)
+                
             })
   }
   if (localStorage.getItem('token')) {
     api.httptk.get('/verifytoken').then(res => {
      
       if (res.data.user) {
+
       } else {
         router.push('/home')
         store.commit('login',false)

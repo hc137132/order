@@ -99,21 +99,21 @@ const payment = () => {
     var formdata = new FormData()
     formdata.append('orderid', route.query.orderid)
     formdata.append('userid', store.state.userdata.userid)
-    // api.httptk.post('/payment',formdata).then(
-    // response=>{
-    //     console.log(response.data)
-    //     // 这里return 的是后端的支付链接或
-    //     if (response.data.paymentUrl) {
-    //       // 跳转到支付页面
-    //       window.location.href = response.data.paymentUrl;
-    //     } else if (response.data.qrCodeUrl) {
-    //       // 显示支付二维码
-    //       this.showQrCode(response.data.qrCodeUrl);
-    //     }
+    api.httptk.post('/payment',formdata).then(
+    response=>{
+        router.push('/userhome/myproject')
+        
+        // if (response.data.paymentUrl) {
+        //  
+        //   window.location.href = response.data.paymentUrl;
+        // } else if (response.data.qrCodeUrl) {
+        //   
+        //   this.showQrCode(response.data.qrCodeUrl);
+        // }
 
-    // }
-    // )
-    // 使用websocket监控支付结果
+    }
+    )
+    
     const ws = new WebSocket(`ws://127.0.0.1:8000/ws/payment/${route.query.orderid}/`);
 
     ws.onopen = () => {
