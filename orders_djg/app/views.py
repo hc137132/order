@@ -7,8 +7,6 @@ import json
 import base64
 import time
 import datetime
-from django.core.mail import send_mail
-import random
 import sys
 import uuid
 from django.template.loader import get_template

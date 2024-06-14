@@ -31,10 +31,3 @@ repassword
 my Undertake承接的project list
 
  web  socket 
-5/29
-payment
-前端发起，并create websocket（orderid）
-后端接收到后返回支付url or 二维码
-支付结果返回后端接口
-后端接口使用websocket发送支付结果
-前端websocket根据结果操作

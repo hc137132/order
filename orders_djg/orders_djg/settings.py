@@ -125,34 +125,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 
-# 配置应用程序的静态文件路径
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-# 或者配置全局的静态文件路径
 STATIC_ROOT = os.path.join(BASE_DIR, '/static')
-#avatars save dir
 MEDIA_URL = '/avatars/'
 MEDIA_ROOT = BASE_DIR / 'static/avatars'
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# 邮件相关配置
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # 发送邮件配置
-EMAIL_HOST = 'smtp.163.com'  # 服务器名称
-EMAIL_PORT = 25  # 服务端口
-EMAIL_HOST_USER = '19982840632@163.com'  # 填写自己邮箱
-EMAIL_HOST_PASSWORD = 'KCAZEJXFCCINBIYG'  # 在邮箱中设置的客户端授权密码
-EMAIL_FROM = 'AAA'  # 收件人看到的发件人
+# Email related configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'  # server name
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'aaaaaaaa@111.com'  # Fill in your own email
+EMAIL_HOST_PASSWORD = 'xxxxxxxxx'  # The client authorization password set in the mailbox
+EMAIL_FROM = 'AAA'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_USE_TLS = True  # 是否使用TLS安全传输协议
-# EMAIL_USE_SSL = True    #是否使用SSL加密，qq企业邮箱要求使用
+EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
 
 
-# 将ws连接对象存放在内存中,必须双引号啊
+
 CHANNEL_LAYERS={
     "default":{
         "BACKEND":"channels_redis.core.RedisChannelLayer",
